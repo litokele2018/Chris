@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>litokeleProfile</title>
+</head>
+<body>
+  <div id="app">
+    Welcome to Game World
+  </div>
+  <button onclick='handleClick()'>click to obtain something</button>
+  <script>
+    function handleClick() {
+      //发ajax请求
+      let XML = new XMLHttpRequest() 
+
+      XML.onreadystatechange = function () {
+        if (XML.readyState === 4) {
+          if (XML.status === 200) {
+            //请求响应成功
+            const a = document.getElementById('app')
+            // console.log(JSON.parse(XML.responseText))
+            a.innerHTML = `<li>${JSON.parse(XML.responseText).name}</li>`
+            a.innerHTML += `<li>${JSON.parse(XML.responseText).age}</li>`
+          }
+        }
+      }
+      XML.open('GET', '/something')
+      XML.send()
+      
+    }
+  </script>
+</body>
+</html>

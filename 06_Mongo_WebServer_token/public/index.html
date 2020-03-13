@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>欢迎来到Litokele的主页</title>
+  <style>
+    .signin {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 500px;
+      height: 300px;
+    }
+    .signin>div{
+      display: inline-block;
+      width: 200px;
+      text-align: right;
+    }
+    #submit{
+      width: 200px;
+      margin-left: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div class="signin">
+    <h2 style="text-align: center;">Please register first</h2>
+    <div>Account:</div>
+    <input type="text">
+    <br>
+    <div>Password:</div>
+    <input type="password" placeholder="password">
+    <br>
+    <div>Please check again:</div>
+    <input type="password" 
+            placeholder="password"
+            onfocus="this.placeholder=''" 
+            onblur="this.placeholder='password'">
+    <button id="showPassword" onclick="showPassword()">显示密码</button>
+    <br>
+    <br>
+    <button id="submit" onclick="submit()">注册</button>
+    <button id='get' onclick="getHtml()">访问success</button>
+  </div>
+  <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+  <script>
+
+    const inputs = document.getElementsByTagName('input')
+    const btn = document.getElementById('showPassword')
+    const get = document.getElementById('get')
+
+    let pas = true
+
+    function getHtml() {
+      location.href = 'http://localhost:8080/success'
+    }
+
+
+    function showPassword() {
+      if (!inputs[1].value || !inputs[2].value) {
+        return
+      }
+      if (pas) {
+        inputs[1].type = 'text'
+        inputs[2].type = 'text'
+        btn.innerText = "隐藏密码"
+        pas = false
+      } else {
+        inputs[1].type = 'password'
+        inputs[2].type = 'password'
+        btn.innerText = "显示密码"
+        pas = true
+      }
+    }
+    function submit() {
+      for (let i = 0; i < inputs.length; i ++) {
+        if (!inputs[i].value || inputs[1].value !== inputs[2].value) {
+          alert('请确保输入正确')
+          return
+        }
+      }
+      let userAccount = inputs[0].value
+      let userPassword = inputs[1].value
+      let obj = {
+        userAccount,
+        userPassword
+      }
+      axios.post('/register', obj)
+          .then(res => {
+            console.log(res)  
+            document.cookie = `token=${res.data.token}`
+          })
+          .catch(err => {
+           console.log(err) 
+          })
+    }
+  </script>
+</body>
+</html>
